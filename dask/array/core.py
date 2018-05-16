@@ -1942,7 +1942,13 @@ def normalize_chunks(chunks, shape=None):
             raise ValueError("Chunks do not add up to shape. "
                              "Got chunks=%s, shape=%s" % (chunks, shape))
 
-    return tuple(tuple(int(x) if not math.isnan(x) else x for x in c) for c in chunks)
+    def clean_chunk_dims(cdim):
+        if len(cdim) > 1:
+            cdim = filter(lambda y:y, cdim)
+        return tuple(int(x) if not math.isnan(x) else x for x in cdim)
+        
+    return tuple(clean_chunk_dims(c) for c in chunks)
+    #return tuple(tuple(int(x) if not math.isnan(x) else x for x in c) for c in chunks)
 
 
 def from_array(x, chunks, name=None, lock=False, asarray=True, fancy=True,

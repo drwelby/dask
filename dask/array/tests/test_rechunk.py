@@ -181,6 +181,13 @@ def test_rechunk_with_integer():
     assert (x.compute() == y.compute()).all()
 
 
+def test_rechunk_with_zero_placeholders():
+    x = da.ones((24,24), chunks=((12,12), (24,)))
+    y = da.ones((24,24), chunks=((12,12), (12,12)))
+    y = y.rechunk( ((12,12), (24,0)) )
+    assert x.chunks == y.chunks
+
+
 def test_rechunk_0d():
     a = np.array(42)
     x = da.from_array(a, chunks=())
